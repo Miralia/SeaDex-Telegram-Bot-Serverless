@@ -4,8 +4,26 @@ import { runSyncTick } from "./sync"
 import { handleTelegramUpdate } from "./telegram"
 import type { Env, SyncMessage, TelegramUpdate } from "./types"
 
+const PUBLIC_API_MAX_SEARCH_LENGTH = 256
+
 function json(data: unknown, status = 200): Response {
   return Response.json(data, { status, headers: { "cache-control": "no-store" } })
+}
+
+function clientIp(request: Request): string {
+  return request.headers.get("CF-Connecting-IP") ?? "unknown"
+}
+
+async function publicApiLimit(request: Request, env: Env): Promise<Response | null> {
+  if (!env.PUBLIC_API_RATE_LIMITER) return null
+  try {
+    const outcome = await env.PUBLIC_API_RATE_LIMITER.limit({ key: `public-api:${clientIp(request)}` })
+    if (outcome.success) return null
+    return json({ error: "rate limit exceeded" }, 429)
+  } catch (error) {
+    console.error("Public API rate limiter unavailable", String(error))
+    return json({ error: "rate limiter unavailable" }, 503)
+  }
 }
 
 function isAuthorizedWebhook(request: Request, env: Env): boolean {
@@ -23,6 +41,11 @@ const worker: ExportedHandler<Env, SyncMessage> = {
 
     if (request.method === "GET" && url.pathname === "/api/search") {
       const query = url.searchParams.get("q") ?? ""
+      if (query.length > PUBLIC_API_MAX_SEARCH_LENGTH) {
+        return json({ error: "query too long" }, 400)
+      }
+      const limited = await publicApiLimit(request, env)
+      if (limited) return limited
       const limitValue = Number(url.searchParams.get("limit") ?? "10")
       const limit = Number.isFinite(limitValue) ? Math.min(Math.max(Math.trunc(limitValue), 1), 20) : 10
       return json(await searchMetadata(env.DB, query, limit))
@@ -30,7 +53,13 @@ const worker: ExportedHandler<Env, SyncMessage> = {
 
     const animeMatch = url.pathname.match(/^\/api\/anime\/(\d+)$/)
     if (request.method === "GET" && animeMatch) {
-      const metadata = await getMetadata(env.DB, Number(animeMatch[1]))
+      const anilistId = Number(animeMatch[1])
+      if (!Number.isSafeInteger(anilistId) || anilistId <= 0) {
+        return json({ error: "invalid anilist id" }, 400)
+      }
+      const limited = await publicApiLimit(request, env)
+      if (limited) return limited
+      const metadata = await getMetadata(env.DB, anilistId)
       return metadata ? json(metadata) : json({ error: "not found" }, 404)
     }
 

@@ -24,3 +24,11 @@ dead_letter_queue = "seadex-sync-dlq"
 
 [vars]
 SEADEX_API_URL = "https://releases.moe/api/collections"
+
+[[ratelimits]]
+name = "PUBLIC_API_RATE_LIMITER"
+namespace_id = "2026080801"
+
+[ratelimits.simple]
+limit = 60
+period = 60

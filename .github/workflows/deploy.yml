@@ -24,7 +24,7 @@ jobs:
       DEPLOY_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DEPLOY_TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
       DEPLOY_TELEGRAM_PUSH_IDS: ${{ secrets.TELEGRAM_PUSH_IDS }}
-      WORKER_URL: ${{ vars.WORKER_URL }}
+      WORKER_URL: ${{ secrets.WORKER_URL }}
       DEPLOY_MESSAGE: "production deployment ${{ github.sha }}"
     steps:
       - uses: actions/checkout@v4

@@ -22,11 +22,15 @@ Create a GitHub Environment named `production` with these secrets:
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_WEBHOOK_SECRET`
 - `TELEGRAM_PUSH_IDS`
+- `WORKER_URL`
 
 Add these environment variables:
 
-- `WORKER_URL`: public Worker URL, without `/telegram`
 - `METADATA_D1_DATABASE`: `seadex`
+
+`WORKER_URL` should contain the public Worker URL without `/telegram` and is
+kept as a GitHub Environment secret because it is used to configure the
+Telegram webhook.
 
 The Cloudflare API token needs permission to deploy Workers and update D1 and
 Queues. The real D1 UUID is supplied through GitHub Secrets and is never stored
@@ -45,6 +49,10 @@ npm run typecheck
 - `GET /api/search?q=<query>`
 - `GET /api/anime/<anilist-id>`
 - `POST /telegram` (Telegram webhook)
+
+The public API is limited to 60 requests per minute per client IP. The limit
+applies only to the two `GET /api/*` routes; Telegram webhook traffic is not
+counted against it.
 
 ## License
 

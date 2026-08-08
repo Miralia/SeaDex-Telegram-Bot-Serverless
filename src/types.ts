@@ -1,6 +1,7 @@
 export interface Env {
   DB: D1Database
   SYNC_QUEUE: Queue<SyncMessage>
+  PUBLIC_API_RATE_LIMITER?: RateLimit
   TELEGRAM_BOT_TOKEN: string
   TELEGRAM_WEBHOOK_SECRET: string
   TELEGRAM_BOT_USERNAME?: string
