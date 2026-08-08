@@ -136,7 +136,6 @@ export function buildUpdateNotification(metadata: AnimeMetadata, diff: EntryNoti
       if (output.length) lines.push("_Notes_", `\`\`\`diff\n${output.join("\n")}\n\`\`\``, "")
     }
     if (diff.current.comparison) {
-      if (lines.at(-1) === "") lines.push("")
       lines.push("_Comparisons_", ...urls(diff.current.comparison).map(link), "")
     }
     return { caption: lines.join("\n"), buttonTorrentIds: changedButtonIds(diff) }
@@ -208,7 +207,6 @@ export function buildUpdateNotification(metadata: AnimeMetadata, diff: EntryNoti
     const addedUrls = next.filter((url) => !old.includes(url))
     const display = addedUrls.length ? addedUrls : next
     if (display.length) {
-      if (lines.at(-1) === "") lines.push("")
       lines.push("_Comparisons_", ...display.map(link), "")
       meaningful = true
     }
