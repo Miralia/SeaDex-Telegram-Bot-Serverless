@@ -59,7 +59,7 @@ curl --fail-with-body --silent --show-error --max-time 30 \
   -X POST "https://api.telegram.org/bot${BOT_TOKEN}/setWebhook" \
   --data-urlencode "url=${WEBHOOK_URL}" \
   --data-urlencode "secret_token=${WEBHOOK_SECRET}" \
-  --data-urlencode 'allowed_updates=["message","inline_query","chosen_inline_result","callback_query"]'
+  --data-urlencode 'allowed_updates=["message","guest_message","inline_query","chosen_inline_result","callback_query"]'
 printf '\n'
 
 curl --fail-with-body --silent --show-error --max-time 30 \
