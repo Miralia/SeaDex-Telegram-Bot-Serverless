@@ -1,0 +1,26 @@
+name = "seadex-telegram-bot-serverless"
+main = "src/worker.ts"
+compatibility_date = "2026-08-06"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "seadex"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[queues.producers]]
+binding = "SYNC_QUEUE"
+queue = "seadex-sync"
+
+[[queues.consumers]]
+queue = "seadex-sync"
+max_batch_size = 1
+max_batch_timeout = 5
+max_concurrency = 1
+max_retries = 5
+dead_letter_queue = "seadex-sync-dlq"
+
+[vars]
+SEADEX_API_URL = "https://releases.moe/api/collections"

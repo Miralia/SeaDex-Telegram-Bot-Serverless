@@ -1,0 +1,24 @@
+{
+  "name": "seadex-telegram-bot-serverless",
+  "version": "0.1.0",
+  "private": true,
+  "license": "0BSD",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:telegram": "./scripts/deploy-telegram.sh",
+    "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
+    "build:metadata": "node ./node_modules/tsx/dist/cli.mjs scripts/build-metadata.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260804.1",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.23.9",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.119.0"
+  },
+  "dependencies": {
+    "eastasianwidth": "^0.2.0"
+  }
+}

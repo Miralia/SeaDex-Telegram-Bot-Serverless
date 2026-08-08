@@ -1,0 +1,46 @@
+name: Deploy Worker
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
+      DEPLOY_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DEPLOY_TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
+      DEPLOY_TELEGRAM_PUSH_IDS: ${{ secrets.TELEGRAM_PUSH_IDS }}
+      WORKER_URL: ${{ vars.WORKER_URL }}
+      DEPLOY_MESSAGE: "production deployment ${{ github.sha }}"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Apply database performance migration
+        env:
+          CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
+        run: |
+          bash scripts/prepare-wrangler-config.sh "$GITHUB_WORKSPACE/.wrangler/seadex-wrangler.toml"
+          npx wrangler d1 execute seadex \
+            --config "$GITHUB_WORKSPACE/.wrangler/seadex-wrangler.toml" \
+            --remote \
+            --file schema/0010_entry_torrents.sql
+      - run: npm run deploy:telegram

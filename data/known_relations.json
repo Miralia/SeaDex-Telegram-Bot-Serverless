@@ -1,0 +1,913 @@
+{
+  "version": 1,
+  "relations": [
+    {
+      "bangumi_id": 233,
+      "anilist_id": 2593
+    },
+    {
+      "bangumi_id": 458,
+      "anilist_id": 2675
+    },
+    {
+      "bangumi_id": 766,
+      "anilist_id": 4280
+    },
+    {
+      "bangumi_id": 767,
+      "anilist_id": 3783
+    },
+    {
+      "bangumi_id": 812,
+      "anilist_id": 3782
+    },
+    {
+      "bangumi_id": 1333,
+      "anilist_id": 4282
+    },
+    {
+      "bangumi_id": 1530,
+      "anilist_id": 5809
+    },
+    {
+      "bangumi_id": 1868,
+      "anilist_id": 1531
+    },
+    {
+      "bangumi_id": 1944,
+      "anilist_id": 1906
+    },
+    {
+      "bangumi_id": 1945,
+      "anilist_id": 647
+    },
+    {
+      "bangumi_id": 1946,
+      "anilist_id": 1904
+    },
+    {
+      "bangumi_id": 2225,
+      "anilist_id": 5204
+    },
+    {
+      "bangumi_id": 2689,
+      "anilist_id": 1015
+    },
+    {
+      "bangumi_id": 2691,
+      "anilist_id": 1916
+    },
+    {
+      "bangumi_id": 3135,
+      "anilist_id": 2962
+    },
+    {
+      "bangumi_id": 3325,
+      "anilist_id": 5667
+    },
+    {
+      "bangumi_id": 3423,
+      "anilist_id": 5205
+    },
+    {
+      "bangumi_id": 3744,
+      "anilist_id": 2267
+    },
+    {
+      "bangumi_id": 4024,
+      "anilist_id": 146664
+    },
+    {
+      "bangumi_id": 4397,
+      "anilist_id": 1931
+    },
+    {
+      "bangumi_id": 4450,
+      "anilist_id": 8479
+    },
+    {
+      "bangumi_id": 5498,
+      "anilist_id": 6772
+    },
+    {
+      "bangumi_id": 5499,
+      "anilist_id": 8514
+    },
+    {
+      "bangumi_id": 5997,
+      "anilist_id": 1911
+    },
+    {
+      "bangumi_id": 6752,
+      "anilist_id": 981
+    },
+    {
+      "bangumi_id": 6820,
+      "anilist_id": 8078
+    },
+    {
+      "bangumi_id": 7369,
+      "anilist_id": 2073
+    },
+    {
+      "bangumi_id": 8736,
+      "anilist_id": 10705
+    },
+    {
+      "bangumi_id": 9639,
+      "anilist_id": 9563
+    },
+    {
+      "bangumi_id": 9821,
+      "anilist_id": 9774
+    },
+    {
+      "bangumi_id": 10162,
+      "anilist_id": 6187
+    },
+    {
+      "bangumi_id": 10356,
+      "anilist_id": 137
+    },
+    {
+      "bangumi_id": 10570,
+      "anilist_id": 6787
+    },
+    {
+      "bangumi_id": 11044,
+      "anilist_id": 9724
+    },
+    {
+      "bangumi_id": 11629,
+      "anilist_id": 6954
+    },
+    {
+      "bangumi_id": 11647,
+      "anilist_id": 867
+    },
+    {
+      "bangumi_id": 12546,
+      "anilist_id": 9611
+    },
+    {
+      "bangumi_id": 12885,
+      "anilist_id": 10950
+    },
+    {
+      "bangumi_id": 13343,
+      "anilist_id": 10294
+    },
+    {
+      "bangumi_id": 13677,
+      "anilist_id": 2098
+    },
+    {
+      "bangumi_id": 16841,
+      "anilist_id": 866
+    },
+    {
+      "bangumi_id": 17120,
+      "anilist_id": 1619
+    },
+    {
+      "bangumi_id": 17121,
+      "anilist_id": 1732
+    },
+    {
+      "bangumi_id": 18779,
+      "anilist_id": 1969
+    },
+    {
+      "bangumi_id": 18864,
+      "anilist_id": 9117
+    },
+    {
+      "bangumi_id": 19446,
+      "anilist_id": 1335
+    },
+    {
+      "bangumi_id": 20232,
+      "anilist_id": 1253
+    },
+    {
+      "bangumi_id": 20235,
+      "anilist_id": 1259
+    },
+    {
+      "bangumi_id": 21065,
+      "anilist_id": 1215
+    },
+    {
+      "bangumi_id": 21233,
+      "anilist_id": 2424
+    },
+    {
+      "bangumi_id": 23056,
+      "anilist_id": 11547
+    },
+    {
+      "bangumi_id": 23514,
+      "anilist_id": 10997
+    },
+    {
+      "bangumi_id": 25363,
+      "anilist_id": 5955
+    },
+    {
+      "bangumi_id": 26804,
+      "anilist_id": 11743
+    },
+    {
+      "bangumi_id": 26806,
+      "anilist_id": 11313
+    },
+    {
+      "bangumi_id": 27555,
+      "anilist_id": 12499
+    },
+    {
+      "bangumi_id": 35991,
+      "anilist_id": 2684
+    },
+    {
+      "bangumi_id": 37250,
+      "anilist_id": 2085
+    },
+    {
+      "bangumi_id": 37251,
+      "anilist_id": 2086
+    },
+    {
+      "bangumi_id": 38730,
+      "anilist_id": 1168
+    },
+    {
+      "bangumi_id": 38936,
+      "anilist_id": 559
+    },
+    {
+      "bangumi_id": 39118,
+      "anilist_id": 10119
+    },
+    {
+      "bangumi_id": 39531,
+      "anilist_id": 3014
+    },
+    {
+      "bangumi_id": 40249,
+      "anilist_id": 13245
+    },
+    {
+      "bangumi_id": 41256,
+      "anilist_id": 6528
+    },
+    {
+      "bangumi_id": 42095,
+      "anilist_id": 869
+    },
+    {
+      "bangumi_id": 42097,
+      "anilist_id": 868
+    },
+    {
+      "bangumi_id": 45048,
+      "anilist_id": 5755
+    },
+    {
+      "bangumi_id": 45414,
+      "anilist_id": 14627
+    },
+    {
+      "bangumi_id": 46703,
+      "anilist_id": 13267
+    },
+    {
+      "bangumi_id": 47644,
+      "anilist_id": 12223
+    },
+    {
+      "bangumi_id": 47725,
+      "anilist_id": 10713
+    },
+    {
+      "bangumi_id": 47726,
+      "anilist_id": 10714
+    },
+    {
+      "bangumi_id": 47727,
+      "anilist_id": 10715
+    },
+    {
+      "bangumi_id": 47728,
+      "anilist_id": 10716
+    },
+    {
+      "bangumi_id": 47729,
+      "anilist_id": 10717
+    },
+    {
+      "bangumi_id": 49189,
+      "anilist_id": 1185
+    },
+    {
+      "bangumi_id": 49983,
+      "anilist_id": 10897
+    },
+    {
+      "bangumi_id": 52764,
+      "anilist_id": 395
+    },
+    {
+      "bangumi_id": 58033,
+      "anilist_id": 15879
+    },
+    {
+      "bangumi_id": 61276,
+      "anilist_id": 16444
+    },
+    {
+      "bangumi_id": 61498,
+      "anilist_id": 17187
+    },
+    {
+      "bangumi_id": 61545,
+      "anilist_id": 15927
+    },
+    {
+      "bangumi_id": 63714,
+      "anilist_id": 15633
+    },
+    {
+      "bangumi_id": 67748,
+      "anilist_id": 5751
+    },
+    {
+      "bangumi_id": 67749,
+      "anilist_id": 10573
+    },
+    {
+      "bangumi_id": 67832,
+      "anilist_id": 6992
+    },
+    {
+      "bangumi_id": 69163,
+      "anilist_id": 7902
+    },
+    {
+      "bangumi_id": 70167,
+      "anilist_id": 18389
+    },
+    {
+      "bangumi_id": 72627,
+      "anilist_id": 20441
+    },
+    {
+      "bangumi_id": 72767,
+      "anilist_id": 12893
+    },
+    {
+      "bangumi_id": 73260,
+      "anilist_id": 1129
+    },
+    {
+      "bangumi_id": 77014,
+      "anilist_id": 19191
+    },
+    {
+      "bangumi_id": 77480,
+      "anilist_id": 19363
+    },
+    {
+      "bangumi_id": 78282,
+      "anilist_id": 19645
+    },
+    {
+      "bangumi_id": 80839,
+      "anilist_id": 20039
+    },
+    {
+      "bangumi_id": 80985,
+      "anilist_id": 16868
+    },
+    {
+      "bangumi_id": 81145,
+      "anilist_id": 18109
+    },
+    {
+      "bangumi_id": 82079,
+      "anilist_id": 20444
+    },
+    {
+      "bangumi_id": 82726,
+      "anilist_id": 8548
+    },
+    {
+      "bangumi_id": 82729,
+      "anilist_id": 8551
+    },
+    {
+      "bangumi_id": 82777,
+      "anilist_id": 18753
+    },
+    {
+      "bangumi_id": 83253,
+      "anilist_id": 10330
+    },
+    {
+      "bangumi_id": 84083,
+      "anilist_id": 20498
+    },
+    {
+      "bangumi_id": 89486,
+      "anilist_id": 19193
+    },
+    {
+      "bangumi_id": 91322,
+      "anilist_id": 20833
+    },
+    {
+      "bangumi_id": 92412,
+      "anilist_id": 20535
+    },
+    {
+      "bangumi_id": 92950,
+      "anilist_id": 2028
+    },
+    {
+      "bangumi_id": 98283,
+      "anilist_id": 2207
+    },
+    {
+      "bangumi_id": 99809,
+      "anilist_id": 20795
+    },
+    {
+      "bangumi_id": 103453,
+      "anilist_id": 215
+    },
+    {
+      "bangumi_id": 106322,
+      "anilist_id": 968
+    },
+    {
+      "bangumi_id": 107476,
+      "anilist_id": 102629
+    },
+    {
+      "bangumi_id": 107543,
+      "anilist_id": 19195
+    },
+    {
+      "bangumi_id": 108595,
+      "anilist_id": 20861
+    },
+    {
+      "bangumi_id": 109375,
+      "anilist_id": 20791
+    },
+    {
+      "bangumi_id": 110049,
+      "anilist_id": 20811
+    },
+    {
+      "bangumi_id": 111231,
+      "anilist_id": 9796
+    },
+    {
+      "bangumi_id": 114460,
+      "anilist_id": 3481
+    },
+    {
+      "bangumi_id": 118798,
+      "anilist_id": 3517
+    },
+    {
+      "bangumi_id": 118908,
+      "anilist_id": 20963
+    },
+    {
+      "bangumi_id": 120240,
+      "anilist_id": 147462
+    },
+    {
+      "bangumi_id": 121804,
+      "anilist_id": 15411
+    },
+    {
+      "bangumi_id": 132580,
+      "anilist_id": 21178
+    },
+    {
+      "bangumi_id": 133676,
+      "anilist_id": 3157
+    },
+    {
+      "bangumi_id": 139317,
+      "anilist_id": 20181
+    },
+    {
+      "bangumi_id": 139318,
+      "anilist_id": 20794
+    },
+    {
+      "bangumi_id": 139475,
+      "anilist_id": 130362
+    },
+    {
+      "bangumi_id": 140634,
+      "anilist_id": 21326
+    },
+    {
+      "bangumi_id": 141616,
+      "anilist_id": 21307
+    },
+    {
+      "bangumi_id": 144852,
+      "anilist_id": 21348
+    },
+    {
+      "bangumi_id": 146401,
+      "anilist_id": 21347
+    },
+    {
+      "bangumi_id": 158315,
+      "anilist_id": 21736
+    },
+    {
+      "bangumi_id": 158800,
+      "anilist_id": 5296
+    },
+    {
+      "bangumi_id": 159365,
+      "anilist_id": 21513
+    },
+    {
+      "bangumi_id": 171121,
+      "anilist_id": 102836
+    },
+    {
+      "bangumi_id": 177998,
+      "anilist_id": 21780
+    },
+    {
+      "bangumi_id": 178648,
+      "anilist_id": 21770
+    },
+    {
+      "bangumi_id": 180401,
+      "anilist_id": 9376
+    },
+    {
+      "bangumi_id": 186160,
+      "anilist_id": 98662
+    },
+    {
+      "bangumi_id": 186161,
+      "anilist_id": 98663
+    },
+    {
+      "bangumi_id": 189638,
+      "anilist_id": 116015
+    },
+    {
+      "bangumi_id": 190658,
+      "anilist_id": 4339
+    },
+    {
+      "bangumi_id": 192151,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 192152,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 192153,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 192154,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 192155,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 192156,
+      "anilist_id": 21730
+    },
+    {
+      "bangumi_id": 194117,
+      "anilist_id": 99557
+    },
+    {
+      "bangumi_id": 195663,
+      "anilist_id": 100812
+    },
+    {
+      "bangumi_id": 195909,
+      "anilist_id": 8140
+    },
+    {
+      "bangumi_id": 196259,
+      "anilist_id": 97858
+    },
+    {
+      "bangumi_id": 198230,
+      "anilist_id": 20927
+    },
+    {
+      "bangumi_id": 207167,
+      "anilist_id": 97859
+    },
+    {
+      "bangumi_id": 207168,
+      "anilist_id": 97860
+    },
+    {
+      "bangumi_id": 207491,
+      "anilist_id": 98542
+    },
+    {
+      "bangumi_id": 211292,
+      "anilist_id": 551
+    },
+    {
+      "bangumi_id": 217886,
+      "anilist_id": 99302
+    },
+    {
+      "bangumi_id": 219274,
+      "anilist_id": 99568
+    },
+    {
+      "bangumi_id": 226223,
+      "anilist_id": 100780
+    },
+    {
+      "bangumi_id": 226224,
+      "anilist_id": 100780
+    },
+    {
+      "bangumi_id": 227108,
+      "anilist_id": 109670
+    },
+    {
+      "bangumi_id": 229508,
+      "anilist_id": 20927
+    },
+    {
+      "bangumi_id": 234089,
+      "anilist_id": 101083
+    },
+    {
+      "bangumi_id": 238300,
+      "anilist_id": 97887
+    },
+    {
+      "bangumi_id": 238455,
+      "anilist_id": 2173
+    },
+    {
+      "bangumi_id": 239923,
+      "anilist_id": 102649
+    },
+    {
+      "bangumi_id": 239926,
+      "anilist_id": 104990
+    },
+    {
+      "bangumi_id": 240799,
+      "anilist_id": 101344
+    },
+    {
+      "bangumi_id": 249246,
+      "anilist_id": 103870
+    },
+    {
+      "bangumi_id": 249247,
+      "anilist_id": 103870
+    },
+    {
+      "bangumi_id": 249248,
+      "anilist_id": 103870
+    },
+    {
+      "bangumi_id": 249249,
+      "anilist_id": 103870
+    },
+    {
+      "bangumi_id": 251539,
+      "anilist_id": 103209
+    },
+    {
+      "bangumi_id": 261805,
+      "anilist_id": 100049
+    },
+    {
+      "bangumi_id": 262382,
+      "anilist_id": 106169
+    },
+    {
+      "bangumi_id": 270473,
+      "anilist_id": 106896
+    },
+    {
+      "bangumi_id": 271652,
+      "anilist_id": 107203
+    },
+    {
+      "bangumi_id": 278449,
+      "anilist_id": 111931
+    },
+    {
+      "bangumi_id": 282971,
+      "anilist_id": 110261
+    },
+    {
+      "bangumi_id": 286124,
+      "anilist_id": 114334
+    },
+    {
+      "bangumi_id": 286125,
+      "anilist_id": 132324
+    },
+    {
+      "bangumi_id": 286127,
+      "anilist_id": 146632
+    },
+    {
+      "bangumi_id": 296114,
+      "anilist_id": 20927
+    },
+    {
+      "bangumi_id": 296798,
+      "anilist_id": 114030
+    },
+    {
+      "bangumi_id": 297088,
+      "anilist_id": 113828
+    },
+    {
+      "bangumi_id": 297344,
+      "anilist_id": 114304
+    },
+    {
+      "bangumi_id": 305058,
+      "anilist_id": 117763
+    },
+    {
+      "bangumi_id": 308711,
+      "anilist_id": 120211
+    },
+    {
+      "bangumi_id": 315490,
+      "anilist_id": 117764
+    },
+    {
+      "bangumi_id": 315561,
+      "anilist_id": 130530
+    },
+    {
+      "bangumi_id": 315563,
+      "anilist_id": 130530
+    },
+    {
+      "bangumi_id": 316629,
+      "anilist_id": 4024
+    },
+    {
+      "bangumi_id": 318275,
+      "anilist_id": 520
+    },
+    {
+      "bangumi_id": 334203,
+      "anilist_id": 133124
+    },
+    {
+      "bangumi_id": 352905,
+      "anilist_id": 112019
+    },
+    {
+      "bangumi_id": 356474,
+      "anilist_id": 2952
+    },
+    {
+      "bangumi_id": 361384,
+      "anilist_id": 124032
+    },
+    {
+      "bangumi_id": 361385,
+      "anilist_id": 124032
+    },
+    {
+      "bangumi_id": 363033,
+      "anilist_id": 112534
+    },
+    {
+      "bangumi_id": 378799,
+      "anilist_id": 9163
+    },
+    {
+      "bangumi_id": 381842,
+      "anilist_id": 148970
+    },
+    {
+      "bangumi_id": 383525,
+      "anilist_id": 143766
+    },
+    {
+      "bangumi_id": 384634,
+      "anilist_id": 21056
+    },
+    {
+      "bangumi_id": 390859,
+      "anilist_id": 151898
+    },
+    {
+      "bangumi_id": 395782,
+      "anilist_id": 146722
+    },
+    {
+      "bangumi_id": 403045,
+      "anilist_id": 17719
+    },
+    {
+      "bangumi_id": 417396,
+      "anilist_id": 8108
+    },
+    {
+      "bangumi_id": 417398,
+      "anilist_id": 8109
+    },
+    {
+      "bangumi_id": 425211,
+      "anilist_id": 151384
+    },
+    {
+      "bangumi_id": 425590,
+      "anilist_id": 204544
+    },
+    {
+      "bangumi_id": 425942,
+      "anilist_id": 17961
+    },
+    {
+      "bangumi_id": 425944,
+      "anilist_id": 18637
+    },
+    {
+      "bangumi_id": 426274,
+      "anilist_id": 168555
+    },
+    {
+      "bangumi_id": 459642,
+      "anilist_id": 171099
+    },
+    {
+      "bangumi_id": 473832,
+      "anilist_id": 173174
+    },
+    {
+      "bangumi_id": 473833,
+      "anilist_id": 182241
+    },
+    {
+      "bangumi_id": 481869,
+      "anilist_id": 177231
+    },
+    {
+      "bangumi_id": 481870,
+      "anilist_id": 177230
+    },
+    {
+      "bangumi_id": 485354,
+      "anilist_id": 176635
+    },
+    {
+      "bangumi_id": 488960,
+      "anilist_id": 163139
+    },
+    {
+      "bangumi_id": 545695,
+      "anilist_id": 188394
+    },
+    {
+      "bangumi_id": 564314,
+      "anilist_id": 198745
+    },
+    {
+      "bangumi_id": 565701,
+      "anilist_id": 194829
+    },
+    {
+      "bangumi_id": 592283,
+      "anilist_id": 199812
+    },
+    {
+      "bangumi_id": 627136,
+      "anilist_id": 213831
+    }
+  ]
+}

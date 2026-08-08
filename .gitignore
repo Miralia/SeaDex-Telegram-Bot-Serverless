@@ -1,0 +1,15 @@
+node_modules/
+.wrangler/
+wrangler.*.toml
+.dev.vars
+dist/
+artifacts/
+.metadata-state.json
+*.db
+*.sqlite
+*.sql
+!schema/*.sql
+.DS_Store
+logs/
+*.log
+test/
