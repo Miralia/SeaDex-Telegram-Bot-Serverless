@@ -17,7 +17,6 @@ on:
           - known
   schedule:
     - cron: "17 3 * * *"
-    - cron: "17 4 1 * *"
 
 concurrency:
   group: metadata-build
@@ -45,11 +44,8 @@ jobs:
       - name: Build metadata
         env:
           ANILIST_MODE_INPUT: ${{ inputs.anilist_mode || 'incremental' }}
-          EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
         run: |
-          MODE="$ANILIST_MODE_INPUT"
-          if [ "$EVENT_SCHEDULE" = "17 4 1 * *" ]; then MODE=known; fi
-          npm run build:metadata -- --anilist-mode "$MODE" --state .metadata-state.json
+          npm run build:metadata -- --anilist-mode "$ANILIST_MODE_INPUT" --state .metadata-state.json
       - name: Apply metadata to D1
         env:
           D1_DATABASE: ${{ vars.METADATA_D1_DATABASE }}
