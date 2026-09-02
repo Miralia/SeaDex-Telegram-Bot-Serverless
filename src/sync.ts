@@ -304,20 +304,31 @@ function torrentChanges(oldTorrent: SeaDexTorrent, current: SeaDexTorrent): Reco
   return changes
 }
 
-function entryUpsert(db: D1Database, record: Record<string, unknown>): D1PreparedStatement {
+export function entryUpsert(db: D1Database, record: Record<string, unknown>): D1PreparedStatement {
   const entry = entryFromApi(record)
+  // Column guard keeps frontier re-upserts of unchanged rows at zero writes.
   return db.prepare(`INSERT INTO entries(id, alid, incomplete, notes, comparison, trs, theoretical_best, created, updated)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET alid=excluded.alid, incomplete=excluded.incomplete,
-    notes=excluded.notes, comparison=excluded.comparison, trs=excluded.trs, theoretical_best=excluded.theoretical_best, created=excluded.created, updated=excluded.updated`)
+    notes=excluded.notes, comparison=excluded.comparison, trs=excluded.trs, theoretical_best=excluded.theoretical_best, created=excluded.created, updated=excluded.updated
+    WHERE entries.alid IS NOT excluded.alid OR entries.incomplete IS NOT excluded.incomplete
+      OR entries.notes IS NOT excluded.notes OR entries.comparison IS NOT excluded.comparison
+      OR entries.trs IS NOT excluded.trs OR entries.theoretical_best IS NOT excluded.theoretical_best
+      OR entries.created IS NOT excluded.created OR entries.updated IS NOT excluded.updated`)
     .bind(entry.id, entry.alid, Number(entry.incomplete), entry.notes, entry.comparison, JSON.stringify(entry.trs), entry.theoreticalBest, entry.created, entry.updated)
 }
 
-function torrentUpsert(db: D1Database, record: Record<string, unknown>): D1PreparedStatement {
+export function torrentUpsert(db: D1Database, record: Record<string, unknown>): D1PreparedStatement {
   const torrent = torrentFromApi(record)
   return db.prepare(`INSERT INTO torrents(id, url, info_hash, release_group, tracker, is_best, dual_audio, grouped_url, tags, files, created, updated)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET url=excluded.url, info_hash=excluded.info_hash,
     release_group=excluded.release_group, tracker=excluded.tracker, is_best=excluded.is_best, dual_audio=excluded.dual_audio,
-    grouped_url=excluded.grouped_url, tags=excluded.tags, files=excluded.files, created=excluded.created, updated=excluded.updated`)
+    grouped_url=excluded.grouped_url, tags=excluded.tags, files=excluded.files, created=excluded.created, updated=excluded.updated
+    WHERE torrents.url IS NOT excluded.url OR torrents.info_hash IS NOT excluded.info_hash
+      OR torrents.release_group IS NOT excluded.release_group OR torrents.tracker IS NOT excluded.tracker
+      OR torrents.is_best IS NOT excluded.is_best OR torrents.dual_audio IS NOT excluded.dual_audio
+      OR torrents.grouped_url IS NOT excluded.grouped_url OR torrents.tags IS NOT excluded.tags
+      OR torrents.files IS NOT excluded.files OR torrents.created IS NOT excluded.created
+      OR torrents.updated IS NOT excluded.updated`)
     .bind(torrent.id, torrent.url, torrent.infoHash, torrent.releaseGroup, torrent.tracker, Number(torrent.isBest), Number(torrent.dualAudio), torrent.groupedUrl, JSON.stringify(torrent.tags), JSON.stringify(torrent.files), torrent.created, torrent.updated)
 }
 
@@ -496,6 +507,9 @@ async function retryNotificationOutbox(env: Env): Promise<void> {
 
 async function prepareEntryNotifications(env: Env, oldEntry: SeaDexEntry | null, current: SeaDexEntry, changes: Record<string, unknown>, torrentFieldChanges: Record<string, Record<string, unknown>>, previousTorrents: SeaDexTorrent[], currentTorrents: SeaDexTorrent[]): Promise<PendingNotification[]> {
   if (!current.alid || !env.TELEGRAM_PUSH_IDS) return []
+  // Frontier records revisit unchanged entries; skip the metadata lookup
+  // when neither the entry nor its torrents changed.
+  if (oldEntry && !Object.keys(changes).length && !Object.keys(torrentFieldChanges).length) return []
   const metadata = await getMetadata(env.DB, current.alid) ?? {
     anilistId: current.alid,
     title: `Anime (${current.alid})`,
@@ -531,7 +545,7 @@ async function changedPages(
   watermark: Watermark | null,
   force = false,
   relatedTorrentIds: Set<string> = new Set()
-): Promise<{ records: Record<string, unknown>[]; head: Record<string, unknown>[]; probe: string }> {
+): Promise<{ records: Record<string, unknown>[]; head: Record<string, unknown>[]; probe: string; probeChanged: boolean }> {
   const records: Record<string, unknown>[] = []
   const seen = new Set<string>()
   const foundRelated = new Set<string>()
@@ -539,7 +553,8 @@ async function changedPages(
   const head = first.items
   const probe = probeHash(head)
   const previousProbe = await state<string>(env.DB, `${collection}_probe`)
-  if (!force && watermark && previousProbe === probe) return { records, head, probe }
+  const probeChanged = previousProbe !== probe
+  if (!force && watermark && previousProbe === probe) return { records, head, probe, probeChanged }
   const includeKnownFrontier = force || previousProbe !== probe
 
   let pageNumber = 1
@@ -567,7 +582,7 @@ async function changedPages(
     if (reachedKnownHistory) break
     pageNumber += 1
   }
-  return { records, head, probe }
+  return { records, head, probe, probeChanged }
 }
 
 const D1_BATCH_STATEMENT_LIMIT = 90
@@ -658,8 +673,10 @@ async function incremental(env: Env): Promise<void> {
   const entryRecords = entryFeed.records
   const torrentRecords = torrentFeed.records
   if (!entryRecords.length && !torrentRecords.length) {
-    await saveState(env.DB, "entries_probe", entryFeed.probe)
-    await saveState(env.DB, "torrents_probe", torrentFeed.probe)
+    // Unchanged probes are already persisted; rewriting them every tick
+    // burned the write quota for no effect.
+    if (entryFeed.probeChanged) await saveState(env.DB, "entries_probe", entryFeed.probe)
+    if (torrentFeed.probeChanged) await saveState(env.DB, "torrents_probe", torrentFeed.probe)
     console.log("SeaDex incremental sync", { entries: 0, torrents: 0, durationMs: Date.now() - started })
     return
   }
@@ -836,8 +853,8 @@ async function incremental(env: Env): Promise<void> {
   const stateStatements: D1PreparedStatement[] = []
   if (entryNext) stateStatements.push(stateUpsert(env.DB, "entries_watermark", entryNext))
   if (torrentNext) stateStatements.push(stateUpsert(env.DB, "torrents_watermark", torrentNext))
-  stateStatements.push(stateUpsert(env.DB, "entries_probe", entryFeed.probe))
-  stateStatements.push(stateUpsert(env.DB, "torrents_probe", torrentFeed.probe))
+  if (entryFeed.probeChanged) stateStatements.push(stateUpsert(env.DB, "entries_probe", entryFeed.probe))
+  if (torrentFeed.probeChanged) stateStatements.push(stateUpsert(env.DB, "torrents_probe", torrentFeed.probe))
   // Advance watermarks only after idempotent source and outbox writes complete.
   try {
     await batchInGroups(env.DB, dataGroups)
