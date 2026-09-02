@@ -887,6 +887,9 @@ export async function runSyncTick(env: Env): Promise<void> {
       await beginInitialSync(env)
       return
     }
+    // Tables were populated outside the sync flow; record it so later ticks
+    // skip the presence probes.
+    await saveState(env.DB, "sync_initialized", { completedAt: now() })
   }
   if (await state<boolean>(env.DB, "stats_dirty")) {
     await refreshStats(env.DB)
