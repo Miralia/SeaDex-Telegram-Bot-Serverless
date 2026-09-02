@@ -800,8 +800,8 @@ async function incremental(env: Env): Promise<void> {
     if (notificationKeys.has(key)) continue
     notificationKeys.add(key)
     const existing = await env.DB.prepare(
-      "SELECT id FROM notification_outbox WHERE chat_id = ? AND payload = ? AND sent_at IS NULL AND failed_at IS NULL LIMIT 1"
-    ).bind(notification.payload.chatId, notification.serialized).first<{ id: number }>()
+      "SELECT id FROM notification_outbox WHERE dedupe_key = ? AND sent_at IS NULL AND failed_at IS NULL LIMIT 1"
+    ).bind(notification.serialized).first<{ id: number }>()
     if (!existing) {
       const statement = env.DB.prepare(
         `INSERT OR IGNORE INTO notification_outbox(chat_id, payload, sync_run_id, dedupe_key,
@@ -866,8 +866,8 @@ async function incremental(env: Env): Promise<void> {
   try {
     for (const notification of notifications) {
       const row = await env.DB.prepare(
-        "SELECT id, attempts, max_attempts FROM notification_outbox WHERE chat_id = ? AND payload = ? AND sent_at IS NULL AND failed_at IS NULL ORDER BY id LIMIT 1"
-      ).bind(notification.payload.chatId, notification.serialized).first<{ id: number; attempts: number; max_attempts: number }>()
+        "SELECT id, attempts, max_attempts FROM notification_outbox WHERE dedupe_key = ? AND sent_at IS NULL AND failed_at IS NULL ORDER BY id LIMIT 1"
+      ).bind(notification.serialized).first<{ id: number; attempts: number; max_attempts: number }>()
       if (row) await deliverOutbox(env, row.id, notification.payload, Number(row.attempts ?? 0), Number(row.max_attempts ?? OUTBOX_MAX_ATTEMPTS))
     }
     await refreshStats(env.DB)
