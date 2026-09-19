@@ -3,7 +3,11 @@ main = "src/worker.ts"
 compatibility_date = "2026-08-06"
 
 [triggers]
-crons = ["*/5 * * * *"]
+# Detection latency is bounded by this interval: SeaDex changes are only seen by
+# the next tick, so a five-minute schedule adds up to five minutes of lag on top
+# of the sync itself. One minute matches the previous always-on deployment while
+# the probe below keeps the per-tick upstream cost small.
+crons = ["* * * * *"]
 
 [[d1_databases]]
 binding = "DB"

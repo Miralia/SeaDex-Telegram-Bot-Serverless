@@ -28,6 +28,11 @@ type PendingNotification = {
 }
 
 const PAGE_SIZE = 100
+// Ties on `updated` are broken by id so the head of the feed is stable across
+// requests; an unstable head would make the probe change without a real update.
+const FEED_SORT = "-updated,id"
+// The probe only needs to notice that the head of the feed moved, not read it.
+const PROBE_FIELDS = ["id", "updated"] as const
 const torrentFields = ["url", "infoHash", "releaseGroup", "tracker", "isBest", "dualAudio", "groupedUrl", "tags", "files"] as const
 const SEADEX_REQUEST_TIMEOUT_MS = 20_000
 const SEADEX_MAX_ATTEMPTS = 4
@@ -191,11 +196,17 @@ async function clearState(db: D1Database, name: string): Promise<void> {
   await db.prepare("DELETE FROM sync_state WHERE name = ?").bind(name).run()
 }
 
-async function page(env: Env, collection: "entries" | "torrents", pageNumber: number): Promise<PocketBasePage> {
+async function page(
+  env: Env,
+  collection: "entries" | "torrents",
+  pageNumber: number,
+  fields?: readonly string[]
+): Promise<PocketBasePage> {
   const url = new URL(`${env.SEADEX_API_URL}/${collection}/records`)
   url.searchParams.set("perPage", String(PAGE_SIZE))
   url.searchParams.set("page", String(pageNumber))
-  url.searchParams.set("sort", "-updated")
+  url.searchParams.set("sort", FEED_SORT)
+  if (fields?.length) url.searchParams.set("fields", fields.join(","))
   let lastError: unknown = null
   for (let attempt = 0; attempt < SEADEX_MAX_ATTEMPTS; attempt += 1) {
     try {
@@ -545,21 +556,23 @@ async function changedPages(
   watermark: Watermark | null,
   force = false,
   relatedTorrentIds: Set<string> = new Set()
-): Promise<{ records: Record<string, unknown>[]; head: Record<string, unknown>[]; probe: string; probeChanged: boolean }> {
+): Promise<{ records: Record<string, unknown>[]; probe: string; probeChanged: boolean }> {
   const records: Record<string, unknown>[] = []
   const seen = new Set<string>()
   const foundRelated = new Set<string>()
-  const first = await page(env, collection, 1)
-  const head = first.items
-  const probe = probeHash(head)
+  // A steady-state tick only needs to know whether the head of the feed moved.
+  // Reading the full head cost ~270 KB of upstream traffic per tick, so probe
+  // with `fields=id,updated` and only download the records once the probe moves.
+  const probePage = await page(env, collection, 1, PROBE_FIELDS)
+  const probe = probeHash(probePage.items)
   const previousProbe = await state<string>(env.DB, `${collection}_probe`)
   const probeChanged = previousProbe !== probe
-  if (!force && watermark && previousProbe === probe) return { records, head, probe, probeChanged }
-  const includeKnownFrontier = force || previousProbe !== probe
+  if (!force && watermark && !probeChanged) return { records, probe, probeChanged }
+  const includeKnownFrontier = force || probeChanged
 
   let pageNumber = 1
   while (true) {
-    const result = pageNumber === 1 ? first : await page(env, collection, pageNumber)
+    const result = await page(env, collection, pageNumber)
     const changed = updatedRecords(result.items, watermark, includeKnownFrontier)
     const related = collection === "entries" && force && relatedTorrentIds.size
       ? result.items.filter((item) => {
@@ -582,7 +595,7 @@ async function changedPages(
     if (reachedKnownHistory) break
     pageNumber += 1
   }
-  return { records, head, probe, probeChanged }
+  return { records, probe, probeChanged }
 }
 
 const D1_BATCH_STATEMENT_LIMIT = 90
