@@ -54,6 +54,20 @@ The public API is limited to 60 requests per minute per client IP. The limit
 applies only to the two `GET /api/*` routes; Telegram webhook traffic is not
 counted against it.
 
+## Backups
+
+D1 keeps 30 days of minute-granularity history through Time Travel, and the
+`Backup D1` workflow adds a daily logical backup that is restored and
+row-count-checked on every run.
+
+```sh
+CLOUDFLARE_D1_DATABASE_ID=<uuid> npm run backup:d1        # write backups/
+npm run restore:d1:verify backups/<archive>.sql.gz        # prove it restores
+```
+
+See [docs/backup.md](docs/backup.md) for the recovery layers, the restore
+runbook and the `d1 export` FTS5 workaround.
+
 ## License
 
 Project-authored source code, schema, scripts, and configuration are licensed

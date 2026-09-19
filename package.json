@@ -9,7 +9,9 @@
     "deploy": "wrangler deploy",
     "deploy:telegram": "./scripts/deploy-telegram.sh",
     "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
-    "build:metadata": "node ./node_modules/tsx/dist/cli.mjs scripts/build-metadata.ts"
+    "build:metadata": "node ./node_modules/tsx/dist/cli.mjs scripts/build-metadata.ts",
+    "backup:d1": "./scripts/backup-d1.sh",
+    "restore:d1:verify": "./scripts/restore-d1.sh --verify"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260804.1",
