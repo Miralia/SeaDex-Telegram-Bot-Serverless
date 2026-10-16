@@ -246,7 +246,7 @@ export function buttons(metadata: AnimeMetadata, torrents: SeaDexTorrent[]): Tel
   const rows: TelegramButton[][] = [[{
     text: "AniList",
     url: `https://anilist.co/anime/${metadata.anilistId}`
-  }, { text: "Seadex", url: `https://releases.moe/${metadata.anilistId}` }]]
+  }, { text: "Seadex", url: `https://seadex.moe/${metadata.anilistId}` }]]
   const groupedSeen = new Set<string>()
   const deduplicated: SeaDexTorrent[] = []
   for (const torrent of torrents) {
@@ -770,7 +770,7 @@ async function routeTelegramUpdate(env: Env, update: TelegramUpdate): Promise<vo
   const text = message.text.trim()
   const chatId = message.chat.id
   if (/^\/start(?:@\w+)?(?:\s|$)/i.test(text)) {
-    await sendText(env, chatId, "Welcome to SeaDex Bot!\n\nThis bot monitors anime releases from releases.moe\nand sends notifications about updates.\n\nCommands:\n/search - Search for anime\n/random - Get a random entry\n/stats - Show database statistics\n/help - Show this help", message.message_id)
+    await sendText(env, chatId, "Welcome to SeaDex Bot!\n\nThis bot monitors anime releases from seadex.moe\nand sends notifications about updates.\n\nCommands:\n/search - Search for anime\n/random - Get a random entry\n/stats - Show database statistics\n/help - Show this help", message.message_id)
     return
   }
   if (/^\/help(?:@\w+)?(?:\s|$)/i.test(text)) {

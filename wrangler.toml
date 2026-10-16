@@ -27,7 +27,7 @@ max_retries = 5
 dead_letter_queue = "seadex-sync-dlq"
 
 [vars]
-SEADEX_API_URL = "https://releases.moe/api/collections"
+SEADEX_API_URL = "https://seadex.moe/api/collections"
 
 [[ratelimits]]
 name = "PUBLIC_API_RATE_LIMITER"

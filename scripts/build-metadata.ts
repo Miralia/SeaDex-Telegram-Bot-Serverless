@@ -75,7 +75,7 @@ export function formatPictureUrl(url: string | null | undefined): string | null 
 const DEFAULTS = {
   animeDb: "https://github.com/manami-project/anime-offline-database/releases/latest/download/anime-offline-database-minified.json",
   bangumiDb: "https://raw.githubusercontent.com/bangumi-data/bangumi-data/master/dist/data.json",
-  seadexIds: "https://releases.moe/api/listIDs",
+  seadexIds: "https://seadex.moe/api/listIDs",
   anilistApi: "https://graphql.anilist.co"
 }
 
