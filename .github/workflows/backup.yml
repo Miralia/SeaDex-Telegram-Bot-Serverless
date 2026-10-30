@@ -67,7 +67,8 @@ jobs:
             for manifest in backups/*.manifest.json; do
               [ -f "$manifest" ] || continue
               node -e '
-                const m = require(process.argv[1])
+                const fs = require("fs")
+                const m = JSON.parse(fs.readFileSync(process.argv[1], "utf8"))
                 console.log(`- archive: \`${m.archive}\``)
                 console.log(`- sha256: \`${m.sha256}\``)
                 console.log(`- time travel bookmark: \`${m.time_travel_bookmark}\``)
