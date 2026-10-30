@@ -477,6 +477,16 @@ async function markOutboxFailed(env: Env, id: number, attempts: number, message:
   ).bind(attempts, message, now(), now(), id).run()
 }
 
+/**
+ * Stop retrying a send whose outcome is unknown. Telegram may already have
+ * published it, and re-sending is what produced duplicate posts, so the row is
+ * closed and flagged instead of being claimed again.
+ */
+async function markOutboxUnconfirmed(env: Env, id: number, attempts: number, message: string): Promise<void> {
+  console.warn("SeaDex notification delivery unconfirmed; not retrying", { id, attempts, error: message })
+  await markOutboxFailed(env, id, attempts, `unconfirmed: ${message}`)
+}
+
 async function deliverOutbox(env: Env, id: number, payload: OutboxPayload, attempts = 0, maxAttempts = OUTBOX_MAX_ATTEMPTS): Promise<void> {
   try {
     await sendPush(env, payload.chatId, payload.metadata, payload.caption, payload.replyMarkup)
@@ -484,6 +494,11 @@ async function deliverOutbox(env: Env, id: number, payload: OutboxPayload, attem
       .bind(now(), now(), id).run()
   } catch (error) {
     const nextAttempts = attempts + 1
+    // An unconfirmed send is the duplicate-post hazard; never retry it.
+    if (error instanceof TelegramApiError && error.deliveryUnknown) {
+      await markOutboxUnconfirmed(env, id, nextAttempts, errorText(error))
+      return
+    }
     const permanent = error instanceof TelegramApiError && error.permanent
     if (permanent || nextAttempts >= maxAttempts) {
       await markOutboxFailed(env, id, nextAttempts, errorText(error))

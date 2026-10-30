@@ -5,7 +5,11 @@ import type { AnimeMetadata, Env, SeaDexEntry, SeaDexTorrent, TelegramUpdate } f
 
 const TELEGRAM_API = "https://api.telegram.org"
 const TELEGRAM_REQUEST_TIMEOUT_MS = 10_000
+// sendPhoto makes Telegram fetch and re-encode the picture itself, so a tight
+// budget aborts requests that still succeed upstream.
+const TELEGRAM_SEND_TIMEOUT_MS = 30_000
 const TELEGRAM_MAX_ATTEMPTS = 3
+const TELEGRAM_SEND_METHODS = new Set(["sendMessage", "sendPhoto"])
 const TELEGRAM_TEXT_LIMIT = 4096
 const TELEGRAM_CAPTION_LIMIT = 1024
 
@@ -16,7 +20,9 @@ export class TelegramApiError extends Error {
     readonly method: string,
     readonly status: number,
     readonly description: string,
-    readonly retryAfter?: number
+    readonly retryAfter?: number,
+    /** The request reached Telegram but no reply came back; it may be published. */
+    readonly unconfirmed = false
   ) {
     super(`Telegram ${method} failed: ${description}`)
     this.name = "TelegramApiError"
@@ -24,6 +30,15 @@ export class TelegramApiError extends Error {
 
   get retryable(): boolean {
     return this.status === 408 || this.status === 429 || this.status >= 500 || this.status === 0
+  }
+
+  /**
+   * A send whose reply never arrived may still have been published, and a 5xx
+   * can arrive after Telegram queued the message. Retrying either duplicates
+   * the post, so such failures are recorded instead of retried.
+   */
+  get deliveryUnknown(): boolean {
+    return TELEGRAM_SEND_METHODS.has(this.method) && (this.unconfirmed || this.status >= 500)
   }
 
   get permanent(): boolean {
@@ -126,15 +141,19 @@ function torrentUrl(torrent: SeaDexTorrent): { kind: "Nyaa" | "PT"; url: string 
 
 async function telegramOnce(env: Env, method: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
   let response: Response
+  const timeout = TELEGRAM_SEND_METHODS.has(method) ? TELEGRAM_SEND_TIMEOUT_MS : TELEGRAM_REQUEST_TIMEOUT_MS
   try {
     response = await fetch(`${TELEGRAM_API}/bot${env.TELEGRAM_BOT_TOKEN}/${method}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(TELEGRAM_REQUEST_TIMEOUT_MS)
+      signal: AbortSignal.timeout(timeout)
     })
   } catch (error) {
-    throw new TelegramApiError(method, 0, error instanceof Error ? error.message : String(error))
+    // Our own timeout aborts the wait, not the request: Telegram may still
+    // publish it, so the outcome is unknown rather than a failed delivery.
+    const aborted = error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError")
+    throw new TelegramApiError(method, 0, error instanceof Error ? error.message : String(error), undefined, aborted)
   }
   const payload = await response.json<{ ok: boolean; description?: string; parameters?: { retry_after?: number } }>()
     .catch(() => ({ ok: false, description: "invalid Telegram response", parameters: undefined }))
@@ -154,6 +173,7 @@ async function telegramOnce(env: Env, method: string, body: Record<string, unkno
 async function telegram(env: Env, method: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
   let requestBody = body
   let usedPlainFallback = false
+  const sends = TELEGRAM_SEND_METHODS.has(method)
   for (let attempt = 0; attempt < TELEGRAM_MAX_ATTEMPTS; attempt += 1) {
     try {
       return await telegramOnce(env, method, requestBody)
@@ -162,6 +182,8 @@ async function telegram(env: Env, method: string, body: Record<string, unknown>)
         ? error
         : new TelegramApiError(method, 0, error instanceof Error ? error.message : String(error))
 
+      // A rejected parse leaves the message unpublished, so the plain-text
+      // retry stays safe for sends too.
       if (!usedPlainFallback && apiError.status === 400 && /can't parse entities|can't find end of the entity/i.test(apiError.description) && body.parse_mode === "MarkdownV2" && (method === "sendMessage" || method === "sendPhoto")) {
         requestBody = plainBody(body)
         usedPlainFallback = true
@@ -169,7 +191,11 @@ async function telegram(env: Env, method: string, body: Record<string, unknown>)
         console.warn(`Telegram ${method}: retrying with plain text fallback`)
         continue
       }
-      if (!apiError.retryable || attempt === TELEGRAM_MAX_ATTEMPTS - 1) throw apiError
+      // Only a 429 proves a send was refused. Everything else may already be
+      // published, and re-sending is what duplicates posts, so those failures
+      // are surfaced for the outbox to record rather than retried here.
+      const canRetry = sends ? apiError.status === 429 : apiError.retryable
+      if (!canRetry || attempt === TELEGRAM_MAX_ATTEMPTS - 1) throw apiError
       await sleep(retryDelay(attempt, apiError.retryAfter))
     }
   }
